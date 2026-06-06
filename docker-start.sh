@@ -12,8 +12,8 @@ echo "[INFO] Starting services..."
 echo "[INFO] Starting Next.js server on port $NEXT_PORT..."
 cd /app/frontend
 
-# Run Next.js with next start (standard mode)
-PORT=$NEXT_PORT npx next start > /tmp/nextjs.log 2>&1 &
+# Run Next.js with next start (standard mode) - bind only to localhost to prevent Render auto-detecting port 3000
+npx next start -H 127.0.0.1 -p $NEXT_PORT > /tmp/nextjs.log 2>&1 &
 NEXT_PID=$!
 
 echo "[INFO] Next.js PID: $NEXT_PID"
