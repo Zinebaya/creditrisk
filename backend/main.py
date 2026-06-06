@@ -69,6 +69,22 @@ def create_app() -> Flask:
     db_service = DatabaseService(settings.DATABASE_URL)
     db_service.ensure_default_admin(settings.DEFAULT_ADMIN_EMAIL, AuthService.hash_password(settings.DEFAULT_ADMIN_PASSWORD))
     
+    # Seed additional demo accounts (SQLite is ephemeral on Render, so recreate each deploy)
+    _seed_accounts = [
+        ("admin@paypredict.dz", "Admin@2026!", "admin"),
+        ("client@paypredict.dz", "Client@2026!", "client"),
+    ]
+    for _email, _pwd, _role in _seed_accounts:
+        try:
+            existing = db_service.get_user_by_email(_email)
+            if not existing:
+                db_service.create_user(_email, AuthService.hash_password(_pwd), _role, plan_tier="pro" if _role == "client" else "free", is_active=True)
+                print(f"[INFO] Seeded account: {_email} ({_role})")
+            else:
+                print(f"[INFO] Account already exists: {_email}")
+        except Exception as e:
+            print(f"[WARN] Could not seed {_email}: {e}")
+    
     # ML models will be lazily loaded on first use to avoid memory exhaustion during startup
     print("[INFO] ML models will be loaded on first prediction request")
     
