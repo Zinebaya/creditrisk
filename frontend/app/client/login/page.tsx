@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import * as React from "react"
+import { Suspense } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import {
@@ -19,7 +20,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { useLanguage } from "@/contexts/language-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
 
-export default function ClientLoginPage() {
+function ClientLoginContent() {
   const [showPwd, setShowPwd] = React.useState(false)
   const [submitting, setSubmitting] = React.useState(false)
   const [formError, setFormError] = React.useState("")
@@ -297,5 +298,13 @@ export default function ClientLoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ClientLoginPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#06201c] via-[#0e3a33] to-[#164A41]"><div className="text-white">Chargement...</div></div>}>
+      <ClientLoginContent />
+    </Suspense>
   )
 }
