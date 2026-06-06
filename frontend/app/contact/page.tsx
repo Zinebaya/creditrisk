@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = 'force-dynamic'
+
 import React from "react"
 import { useRouter } from "next/navigation"
 import { Mail, MessageSquare, Send, AlertCircle, CheckCircle2 } from "lucide-react"
