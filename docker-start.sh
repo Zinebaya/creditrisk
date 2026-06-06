@@ -4,20 +4,23 @@ set -e
 # Export PORT (default to 8000 if not set)
 export PORT=${PORT:-8000}
 export NEXT_PORT=3000
+export NODE_ENV=production
 
 echo "[INFO] Starting services..."
 
-# Start Next.js server on port 3000 in background
+# Start Next.js server (standalone build) on port 3000 in background
 echo "[INFO] Starting Next.js server on port $NEXT_PORT..."
-cd /app/frontend
-NODE_ENV=production PORT=$NEXT_PORT npm start > /tmp/nextjs.log 2>&1 &
+cd /app/frontend/.next/standalone
+
+# Run standalone Next.js server
+PORT=$NEXT_PORT node server.js > /tmp/nextjs.log 2>&1 &
 NEXT_PID=$!
 
 echo "[INFO] Next.js PID: $NEXT_PID"
 
 # Give Next.js time to start
 echo "[INFO] Waiting for Next.js server to be ready..."
-sleep 10
+sleep 8
 
 # Check if Next.js started successfully
 if ! kill -0 $NEXT_PID 2>/dev/null; then
