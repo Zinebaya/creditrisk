@@ -1,0 +1,17 @@
+{
+  "auth": {
+    "loginTitle": "Connexion Sécurisée",
+    "loginSubtitle": "Connectez-vous à votre espace de travail professionnel.",
+    "email": "Adresse Email",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "signing": "Authentification...",
+    "invalid": "Identifiants invalides."
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "clients": "Clients",
+    "predict": "Prédiction du risque",
+    "settings": "Paramètres"
+  }
+}

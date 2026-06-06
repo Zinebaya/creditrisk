@@ -1,0 +1,17 @@
+{
+  "auth": {
+    "loginTitle": "Secure Access",
+    "loginSubtitle": "Sign in to your professional workspace.",
+    "email": "Email Address",
+    "password": "Password",
+    "submit": "Sign In",
+    "signing": "Authenticating...",
+    "invalid": "Invalid credentials provided."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "clients": "Clients",
+    "predict": "Risk Prediction",
+    "settings": "Settings"
+  }
+}

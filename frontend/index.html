@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credit Risk Predictor</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Credit Risk Predictor</h1>
+      <p>Submit borrower data and get a real-time credit risk decision.</p>
+    </header>
+
+    <section class="card">
+      <div class="login-panel">
+        <h2>Login</h2>
+        <form id="login-form">
+          <input type="text" name="email" placeholder="Email" required />
+          <input type="password" name="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p id="login-status" class="small-text"></p>
+      </div>
+
+      <form id="predict-form" class="hidden">
+        <h2>Make a prediction</h2>
+        <div id="inputs"></div>
+        <button type="submit">Predict Risk</button>
+      </form>
+
+      <section id="result" class="result hidden"></section>
+      <section id="error" class="error hidden"></section>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

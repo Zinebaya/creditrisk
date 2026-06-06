@@ -1,0 +1,42 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Frontend build check",
+			"type": "shell",
+			"command": "cd frontend && npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc",
+				"$eslint-stylish"
+			]
+		},
+		{
+			"label": "Check backend login endpoint",
+			"type": "shell",
+			"command": "cd backend && python -c \"import requests, json; r=requests.post('http://127.0.0.1:8000/auth/login', json={'email':'admin@example.com','password':'admin1234'}); print(r.status_code); print(r.text)\"",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Frontend build check",
+			"type": "shell",
+			"command": "cd frontend && npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc",
+				"$eslint-stylish"
+			]
+		},
+		{
+			"label": "Frontend build check",
+			"type": "shell",
+			"command": "cd frontend; npm run build",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc",
+				"$eslint-stylish"
+			]
+		}
+	]
+}
