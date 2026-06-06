@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, Response
+import httpx
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -86,6 +87,49 @@ def create_app() -> Flask:
     app.register_blueprint(superadmin_bp)  # Already has /api/superadmin prefix
     if payment_bp is not None:
         app.register_blueprint(payment_bp, url_prefix="/api/payment")
+
+    # Catch-all route for Next.js frontend (reverse proxy)
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_frontend(path):
+        """Route all non-API requests to Next.js server."""
+        # Skip API routes - they're handled by blueprints
+        if path.startswith('auth/') or path.startswith('api/'):
+            return jsonify({"error": "Not Found"}), 404
+        
+        try:
+            # Proxy request to Next.js server running on port 3000
+            url = f"http://localhost:3000/{path}"
+            
+            # Handle query strings
+            if request.query_string:
+                url = f"{url}?{request.query_string.decode()}"
+            
+            # Forward the request
+            resp = httpx.request(
+                request.method,
+                url,
+                headers={k: v for k, v in request.headers if k.lower() not in ['host', 'connection']},
+                content=request.get_data(),
+                follow_redirects=True,
+                timeout=30.0
+            )
+            
+            # Return response with proper headers
+            response_headers = dict(resp.headers)
+            # Remove hop-by-hop headers
+            for header in ['transfer-encoding', 'connection', 'keep-alive', 'proxy-authenticate']:
+                response_headers.pop(header, None)
+            
+            return Response(resp.content, status=resp.status_code, headers=response_headers)
+        except Exception as e:
+            print(f"[ERROR] Proxy error: {e}")
+            # Fallback: serve index.html for SPA routing
+            try:
+                with open(str(frontend_dir / "public" / "index.html"), "r") as f:
+                    return f.read(), 200, {"Content-Type": "text/html"}
+            except:
+                return jsonify({"error": "Frontend server unavailable"}), 503
 
     return app
 
