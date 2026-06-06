@@ -36,15 +36,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy built Next.js standalone from builder stage
-COPY --from=frontend-builder /app/frontend/.next/standalone /app/frontend/.next/standalone
-COPY --from=frontend-builder /app/frontend/.next/static /app/frontend/.next/standalone/.next/static
-COPY --from=frontend-builder /app/frontend/public /app/frontend/.next/standalone/public
+# Copy built Next.js from builder stage - full frontend directory
+COPY --from=frontend-builder /app/frontend/.next /app/frontend/.next
+COPY --from=frontend-builder /app/frontend/public /app/frontend/public
+COPY --from=frontend-builder /app/frontend/node_modules /app/frontend/node_modules
 COPY --from=frontend-builder /app/frontend/package*.json /app/frontend/
-
-# Install production dependencies for frontend
-WORKDIR /app/frontend
-RUN npm ci --only=production --prefer-offline --no-audit || true
 
 RUN mkdir -p /app/models /app/logs /app/data
 

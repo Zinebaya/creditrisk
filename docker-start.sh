@@ -8,12 +8,12 @@ export NODE_ENV=production
 
 echo "[INFO] Starting services..."
 
-# Start Next.js server (standalone build) on port 3000 in background
+# Start Next.js server on port 3000 in background
 echo "[INFO] Starting Next.js server on port $NEXT_PORT..."
-cd /app/frontend/.next/standalone
+cd /app/frontend
 
-# Run standalone Next.js server
-PORT=$NEXT_PORT node server.js > /tmp/nextjs.log 2>&1 &
+# Run Next.js with npm start (uses .next/standalone build)
+PORT=$NEXT_PORT npm start > /tmp/nextjs.log 2>&1 &
 NEXT_PID=$!
 
 echo "[INFO] Next.js PID: $NEXT_PID"
