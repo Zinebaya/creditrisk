@@ -72,9 +72,6 @@ def create_app() -> Flask:
     # ML models will be lazily loaded on first use to avoid memory exhaustion during startup
     print("[INFO] ML models will be loaded on first prediction request")
     
-    @app.route("/")
-    def index(): return {"status": "PayPredict API running"}
-
     @app.route("/health")
     def health(): return {"status": "healthy"}
 
