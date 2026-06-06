@@ -4,7 +4,12 @@ const getApiBase = () => {
       return process.env.NEXT_PUBLIC_API_URL
     }
     const hostname = window.location.hostname
-    return `http://${hostname}:8000`
+    // In production, Flask runs behind the same reverse proxy (same origin)
+    // In local dev, Flask runs on port 8000
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return `http://${hostname}:8000`
+    }
+    return window.location.origin
   }
   return process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 }
