@@ -3,7 +3,6 @@ FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PORT=8000
-ENV NODE_ENV=production
 
 WORKDIR /app
 
@@ -24,9 +23,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
 
-# Build frontend
+# Build frontend — install ALL deps (including devDeps like tailwindcss/postcss),
+# run the build, then prune to production-only deps
 WORKDIR /app/frontend
-RUN npm ci --prefer-offline --no-audit && npm run build && npm ci --omit=dev --prefer-offline --no-audit
+RUN npm ci --prefer-offline --no-audit && \
+    npm run build && \
+    npm ci --omit=dev --prefer-offline --no-audit
+
+ENV NODE_ENV=production
 
 RUN mkdir -p /app/models /app/logs /app/data
 

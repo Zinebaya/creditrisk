@@ -4,7 +4,7 @@ from pathlib import Path
 # Add backend directory to path to allow absolute prefix-free imports
 backend_path = str(Path(__file__).resolve().parent / "backend")
 if backend_path not in sys.path:
-    sys.path.append(backend_path)
+    sys.path.insert(0, backend_path)
 
 from main import app
 
