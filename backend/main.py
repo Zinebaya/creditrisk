@@ -96,7 +96,7 @@ def create_app() -> Flask:
         
         try:
             # Proxy request to Next.js server running on port 3000
-            url = f"http://localhost:3000/{path}"
+            url = f"http://127.0.0.1:3000/{path}"
             
             # Handle query strings
             if request.query_string:
@@ -112,11 +112,14 @@ def create_app() -> Flask:
                 timeout=30.0
             )
             
-            # Return response with proper headers
-            response_headers = dict(resp.headers)
-            # Remove hop-by-hop headers
-            for header in ['transfer-encoding', 'connection', 'keep-alive', 'proxy-authenticate']:
-                response_headers.pop(header, None)
+            # Return response with proper headers, excluding hop-by-hop and decoded headers
+            response_headers = {
+                k: v for k, v in resp.headers.items()
+                if k.lower() not in [
+                    'transfer-encoding', 'connection', 'keep-alive', 
+                    'proxy-authenticate', 'content-encoding', 'content-length'
+                ]
+            }
             
             return Response(resp.content, status=resp.status_code, headers=response_headers)
         except Exception as e:
