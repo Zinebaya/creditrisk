@@ -68,58 +68,8 @@ def create_app() -> Flask:
     db_service = DatabaseService(settings.DATABASE_URL)
     db_service.ensure_default_admin(settings.DEFAULT_ADMIN_EMAIL, AuthService.hash_password(settings.DEFAULT_ADMIN_PASSWORD))
     
-    # Initialize ML models on startup
-    try:
-        from services.ml_service import MLModelService
-        ml = MLModelService()
-        if ml.model is None or ml.scaler is None:
-            print("[WARNING] ML models not loaded. Initializing...")
-            import json
-            import pickle
-            import numpy as np
-            from sklearn.preprocessing import StandardScaler
-            from xgboost import XGBClassifier
-            
-            models_dir = Path(settings.MODEL_PATH).parent
-            models_dir.mkdir(parents=True, exist_ok=True)
-            
-            features = [
-                "loan_amnt", "annual_inc", "dti", "fico_range_high", "revol_util",
-                "open_acc", "total_acc", "inq_last_6mths", "delinq_2yrs", "acc_now_delinq"
-            ]
-            
-            # Generate synthetic training data
-            np.random.seed(42)
-            X = np.random.randn(150, len(features)) * 50
-            X[:, 0] = np.abs(X[:, 0]) * 1000 + 10000  # loan_amnt
-            X[:, 1] = np.abs(X[:, 1]) * 10000 + 50000  # annual_inc
-            X[:, 2] = np.abs(X[:, 2]) * 10 + 10  # dti
-            X[:, 3] = np.abs(X[:, 3]) * 100 + 500  # fico_range_high
-            X[:, 4] = np.abs(X[:, 4]) * 20  # revol_util
-            X[:, 5] = np.round(np.abs(X[:, 5])) % 20 + 1  # open_acc
-            X[:, 6] = np.round(np.abs(X[:, 6])) % 40 + 2  # total_acc
-            X[:, 7] = np.round(np.abs(X[:, 7])) % 10  # inq_6m
-            X[:, 8] = np.round(np.abs(X[:, 8])) % 5  # delinq_2y
-            X[:, 9] = np.round(np.abs(X[:, 9])) % 3  # acc_delinq
-            
-            y = np.where((X[:, 1] < 60000) | (X[:, 2] > 35) | (X[:, 3] < 650), 1, 0)
-            
-            scaler = StandardScaler()
-            X_scaled = scaler.fit_transform(X)
-            
-            model = XGBClassifier(n_estimators=30, max_depth=4, random_state=42, eval_metric='logloss', verbosity=0)
-            model.fit(X_scaled, y, verbose=False)
-            
-            with open(settings.MODEL_PATH, "wb") as f:
-                pickle.dump(model, f)
-            with open(settings.SCALER_PATH, "wb") as f:
-                pickle.dump(scaler, f)
-            with open(settings.FEATURES_PATH, "w") as f:
-                json.dump(features, f)
-            
-            print("[OK] ML models initialized successfully")
-    except Exception as e:
-        print(f"[WARNING] ML initialization error: {e}")
+    # ML models will be lazily loaded on first use to avoid memory exhaustion during startup
+    print("[INFO] ML models will be loaded on first prediction request")
     
     @app.route("/")
     def index(): return {"status": "PayPredict API running"}
