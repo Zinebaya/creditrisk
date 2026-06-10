@@ -78,9 +78,9 @@ async function request<T>(path: string, options: RequestInit = {}, useRefreshTok
     headers["Content-Type"] = "application/json"
   }
 
-  // Timeout to prevent infinite loading: 60s for file upload/FormData, 8s for regular requests
+  // Timeout to prevent infinite loading: 60s for file upload/FormData, 30s for regular requests
   const controller = new AbortController()
-  const timeoutMs = (options.body instanceof FormData) ? 60000 : 8000
+  const timeoutMs = (options.body instanceof FormData) ? 60000 : 30000
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
   let res: Response

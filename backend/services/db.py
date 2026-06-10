@@ -533,44 +533,56 @@ class DatabaseService:
     def get_admin_stats(self) -> Dict[str, Any]:
         """Get global platform statistics for admin dashboard."""
         with self.session() as s:
-            total_users = s.execute(select(func.count(User.id))).scalar_one() or 0
-            total_clients = s.execute(select(func.count(Client.id))).scalar_one() or 0
-            total_predictions = s.execute(select(func.count(Prediction.id))).scalar_one() or 0
-            active_subscriptions = s.execute(
-                select(func.count(User.id)).filter(User.subscription_status == "active")
-            ).scalar_one() or 0
-            high_risk_cases = s.execute(
-                select(func.count(Prediction.id)).filter(Prediction.prediction == "high_risk")
-            ).scalar_one() or 0
-            
+            from sqlalchemy import case, literal_column
+
+            # Single query for all user-level stats
+            user_stats = s.execute(
+                select(
+                    func.count(User.id).label("total_users"),
+                    func.sum(case((User.subscription_status == "active", 1), else_=0)).label("active_subscriptions"),
+                    func.sum(case((User.role == "admin", 1), else_=0)).label("admin_count"),
+                    func.sum(case((User.role == "client", 1), else_=0)).label("client_count"),
+                    func.sum(case((User.is_active == True, 1), else_=0)).label("active_count"),
+                    func.sum(case((User.is_active == False, 1), else_=0)).label("inactive_count"),
+                )
+            ).one()
+
+            total_users = user_stats.total_users or 0
+            active_subscriptions = int(user_stats.active_subscriptions or 0)
+            admin_count = int(user_stats.admin_count or 0)
+            client_count = int(user_stats.client_count or 0)
+            active_count = int(user_stats.active_count or 0)
+            inactive_count = int(user_stats.inactive_count or 0)
+
+            # Plan distribution in one query
             plan_dist = s.execute(
                 select(User.plan_tier, func.count(User.id)).group_by(User.plan_tier)
             ).all()
-            
-            admin_count = s.execute(
-                select(func.count(User.id)).filter(User.role == "admin")
-            ).scalar_one() or 0
-            client_count = s.execute(
-                select(func.count(User.id)).filter(User.role == "client")
-            ).scalar_one() or 0
-            
-            active_count = s.execute(
-                select(func.count(User.id)).filter(User.is_active == True)
-            ).scalar_one() or 0
-            inactive_count = s.execute(
-                select(func.count(User.id)).filter(User.is_active == False)
-            ).scalar_one() or 0
-            
+
+            # Single query for all prediction-level stats
             week_ago = datetime.utcnow() - timedelta(days=7)
-            recent_predictions = s.execute(
-                select(func.count(Prediction.id)).filter(Prediction.created_at >= week_ago)
-            ).scalar_one() or 0
-            
+            pred_stats = s.execute(
+                select(
+                    func.count(Prediction.id).label("total_predictions"),
+                    func.sum(case((Prediction.prediction == "high_risk", 1), else_=0)).label("high_risk_cases"),
+                    func.sum(case((Prediction.created_at >= week_ago, 1), else_=0)).label("recent_predictions"),
+                )
+            ).one()
+
+            total_predictions = pred_stats.total_predictions or 0
+            high_risk_cases = int(pred_stats.high_risk_cases or 0)
+            recent_predictions = int(pred_stats.recent_predictions or 0)
+
+            # Total clients
+            total_clients = s.execute(select(func.count(Client.id))).scalar_one() or 0
+
+            # Monthly predictions
             dialect = s.bind.dialect.name
             month_expr = func.strftime('%Y-%m', Prediction.created_at) if dialect == "sqlite" else func.to_char(Prediction.created_at, 'YYYY-MM')
             monthly = s.execute(
                 select(month_expr, func.count(Prediction.id)).group_by(month_expr).order_by(month_expr)
             ).all()
+
             return {
                 "total_users": total_users,
                 "total_clients": total_clients,
