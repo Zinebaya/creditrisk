@@ -16,7 +16,7 @@ class Settings:
     JWT_SECRET: str = os.getenv("JWT_SECRET", "please-set-jwt-secret")
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
-    DATABASE_URL: str = os.getenv("DATABASE_URL", os.getenv("SUPABASE_DB_URL", "postgresql://postgres:password@db:5432/credit_risk"))
+    DATABASE_URL: str = os.getenv("DATABASE_URL", os.getenv("SUPABASE_DB_URL", "postgresql://postgres.xzcavjumobxmrfnqsafi:Gx9%23Ar%2FLPB-E*aN@aws-0-eu-west-1.pooler.supabase.com:5432/postgres"))
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://redis:6379/0")
     MODEL_PATH: str = os.getenv("MODEL_PATH", str(PROJECT_ROOT / "models" / "model.pkl"))
     SCALER_PATH: str = os.getenv("SCALER_PATH", str(PROJECT_ROOT / "models" / "scaler.pkl"))

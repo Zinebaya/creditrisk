@@ -17,7 +17,7 @@ def rel(value: str) -> str:
 
 @dataclass
 class Settings:
-    DATABASE_URL: str = rel(os.getenv("DATABASE_URL", "sqlite:///credit_risk.db"))
+    DATABASE_URL: str = rel(os.getenv("DATABASE_URL", "postgresql://postgres.xzcavjumobxmrfnqsafi:Gx9%23Ar%2FLPB-E*aN@aws-0-eu-west-1.pooler.supabase.com:5432/postgres"))
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
     JWT_SECRET: str = os.getenv("JWT_SECRET", "please-change-this-secret")
