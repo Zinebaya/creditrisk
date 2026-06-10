@@ -14,7 +14,6 @@ const ADMIN_ONLY_PATHS = [
   "/dashboard/admins",
   "/dashboard/users",
   "/dashboard/billing",
-  "/dashboard/reports",
 ]
 
 // Pages that only clients (Enterprise Admins) can access

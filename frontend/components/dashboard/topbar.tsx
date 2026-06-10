@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { LanguageSwitcher } from "@/components/language-switcher"
 import { useAuth } from "@/contexts/auth-context"
 import { useLanguage } from "@/contexts/language-context"
 
@@ -79,7 +78,6 @@ export function DashboardTopbar({ onMenuClick }: { onMenuClick: () => void }) {
             </Button>
           )}
 
-          <LanguageSwitcher compact />
 
           <Button
             variant="ghost"

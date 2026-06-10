@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, ArrowRight } from "lucide-react"
 import { Logo } from "@/components/brand/logo"
 import { Button } from "@/components/ui/button"
-import { LanguageSwitcher } from "@/components/language-switcher"
 import { useLanguage } from "@/contexts/language-context"
 import { cn } from "@/lib/utils"
 
@@ -65,7 +64,6 @@ export function SiteNav() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-2">
-            <LanguageSwitcher compact />
             <Button variant="ghost" asChild className="text-sm">
               <Link href="/login">{t("landing.signIn")}</Link>
             </Button>
@@ -107,10 +105,7 @@ export function SiteNav() {
                     {item.label}
                   </Link>
                 ))}
-                <div className="h-px bg-border my-2" />
-                <div className="px-3 py-2">
-                  <LanguageSwitcher compact />
-                </div>
+
                 <Button variant="ghost" asChild className="justify-start">
                   <Link href="/login" onClick={() => setOpen(false)}>Sign in</Link>
                 </Button>

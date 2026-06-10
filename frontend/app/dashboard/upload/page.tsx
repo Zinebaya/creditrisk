@@ -91,6 +91,52 @@ export default function UploadPage() {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { t } = useLanguage()
 
+  const startProcessing = async (targetFile?: File, targetMissing?: string[]) => {
+    const activeFile = targetFile || file
+    const activeMissing = targetMissing || missingCols
+
+    if (activeMissing.length > 0) {
+      toast.error(t("upload.fixColumns"))
+      return
+    }
+    if (!activeFile) {
+      toast.error(t("upload.noCsvSelected"))
+      return
+    }
+    setStep("processing")
+    setProgress(0)
+    setResults([])
+
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 95) return prev
+        return prev + 5
+      })
+    }, 200)
+
+    try {
+      const response = await api.batchPredict(activeFile)
+      clearInterval(progressInterval)
+      const nextResults = response.predictions.map((row, index) => ({
+        ...row,
+        rowNumber: index + 1,
+      }))
+      setResults(nextResults)
+      setProgress(100)
+      setStep("done")
+      const failedCount = nextResults.filter(r => r.status === "failed").length
+      if (failedCount > 0) {
+        toast.warning(`${nextResults.length - failedCount} lignes traitées avec succès, ${failedCount} erreurs détectées.`)
+      } else {
+        toast.success(`Batch scoring complete - ${nextResults.length} records`)
+      }
+    } catch (error) {
+      clearInterval(progressInterval)
+      setStep("ready")
+      toast.error(error instanceof Error ? error.message : "Batch scoring failed.")
+    }
+  }
+
   const handleFile = async (f: File) => {
     setFile(f)
     setStep("validating")
@@ -115,6 +161,8 @@ export default function UploadPage() {
         setSampleRows([])
         setStep("ready")
         toast.success("Fichier Excel détecté et prêt pour l'analyse.")
+        
+        await startProcessing(f, [])
         return
       }
 
@@ -125,7 +173,13 @@ export default function UploadPage() {
       setMissingCols(missing)
       setRows(parsedRows.rows)
       setSampleRows(parsedRows.rows.slice(0, 3))
-      setStep("ready")
+      
+      if (missing.length === 0) {
+        setStep("ready")
+        await startProcessing(f, missing)
+      } else {
+        setStep("ready")
+      }
     } catch (error) {
       setStep("idle")
       setFile(null)
@@ -143,49 +197,6 @@ export default function UploadPage() {
   const onPick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]
     if (f) handleFile(f)
-  }
-
-  const startProcessing = async () => {
-    if (missingCols.length > 0) {
-      toast.error(t("upload.fixColumns"))
-      return
-    }
-    if (!file) {
-      toast.error(t("upload.noCsvSelected"))
-      return
-    }
-    setStep("processing")
-    setProgress(0)
-    setResults([])
-
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 95) return prev
-        return prev + 5
-      })
-    }, 200)
-
-    try {
-      const response = await api.batchPredict(file)
-      clearInterval(progressInterval)
-      const nextResults = response.predictions.map((row, index) => ({
-        ...row,
-        rowNumber: index + 1,
-      }))
-      setResults(nextResults)
-      setProgress(100)
-      setStep("done")
-      const failedCount = nextResults.filter(r => r.status === "failed").length
-      if (failedCount > 0) {
-        toast.warning(`${nextResults.length - failedCount} lignes traitées avec succès, ${failedCount} erreurs détectées.`)
-      } else {
-        toast.success(`Batch scoring complete - ${nextResults.length} records`)
-      }
-    } catch (error) {
-      clearInterval(progressInterval)
-      setStep("ready")
-      toast.error(error instanceof Error ? error.message : "Batch scoring failed.")
-    }
   }
 
   const reset = () => {

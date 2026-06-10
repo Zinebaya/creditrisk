@@ -122,21 +122,5 @@
   body {
     @apply bg-background text-foreground;
   }
-  
-  /* Arabic language support */
-  html[lang="ar"] {
-    @apply font-arabic;
-    font-family: "Noto Sans Arabic", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-  
-  html[lang="ar"] body {
-    direction: rtl;
-    text-align: right;
-  }
-  
-  /* Ensure RTL works in all directions */
-  html[lang="ar"] [dir="ltr"] {
-    direction: ltr;
-    text-align: left;
-  }
 }
+

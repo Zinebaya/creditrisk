@@ -13,7 +13,7 @@ type LanguageContextType = {
 }
 
 const LanguageContext = React.createContext<LanguageContextType | undefined>(undefined)
-const isLanguage = (value: string | null): value is Language => value === "fr" || value === "en" || value === "ar"
+const isLanguage = (value: string | null): value is Language => value === "fr"
 
 // Build resources with proper namespace structure
 const resources = Object.fromEntries(

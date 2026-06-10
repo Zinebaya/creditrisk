@@ -18,7 +18,6 @@ import { toast } from "sonner"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 import { useLanguage } from "@/contexts/language-context"
-import { LanguageSwitcher } from "@/components/language-switcher"
 
 function ClientLoginContent() {
   const [showPwd, setShowPwd] = React.useState(false)
@@ -100,10 +99,7 @@ function ClientLoginContent() {
       className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#06201c] via-[#0e3a33] to-[#164A41] text-white"
       dir={isRTL ? "rtl" : "ltr"}
     >
-      {/* Language switcher */}
-      <div className="absolute right-6 top-6 z-10">
-        <LanguageSwitcher />
-      </div>
+
 
       {/* Grid background */}
       <div

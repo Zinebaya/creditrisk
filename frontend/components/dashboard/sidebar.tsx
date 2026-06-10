@@ -71,7 +71,6 @@ export function DashboardSidebar({
         { href: "/dashboard/admins", label: t("nav.admins"), icon: ShieldCheck, roles: ["admin"] },
         { href: "/dashboard/users", label: t("nav.users"), icon: Users, roles: ["admin"] },
         { href: "/dashboard/billing", label: t("nav.billing"), icon: CreditCard, roles: ["admin"] },
-        { href: "/dashboard/reports", label: t("nav.reports"), icon: FileText, roles: ["admin"] },
       ],
     },
     {
