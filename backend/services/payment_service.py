@@ -17,7 +17,7 @@ STRIPE_PRODUCTS = {
     "enterprise": {
         "price_id": "price_enterprise_monthly",  # Replace with actual Stripe price ID
         "name": "Enterprise",
-        "amount": None,  # Custom pricing
+        "amount": 500000,  # 5,000.00 DA
         "billing_cycle": "monthly",
     },
 }

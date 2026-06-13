@@ -72,8 +72,8 @@ const PLANS: Plan[] = [
     id: "enterprise",
     name: "Enterprise",
     description: "Unlimited access with dedicated support",
-    monthlyPrice: 0,
-    yearlyPrice: 0,
+    monthlyPrice: 5000,
+    yearlyPrice: 48000,
     currency: "DA",
     predictions: "unlimited",
     features: [
@@ -84,7 +84,7 @@ const PLANS: Plan[] = [
       { name: "24/7 priority support", included: true },
       { name: "On-premises deployment", included: true },
     ],
-    cta: "Contact Sales",
+    cta: "Upgrade to Enterprise",
   },
 ]
 
@@ -94,15 +94,11 @@ export default function SubscriptionsPage() {
   const [billingPeriod, setBillingPeriod] = React.useState<"monthly" | "yearly">("monthly")
 
   const handleUpgrade = (planId: string) => {
-    if (planId === "enterprise") {
-      toast.info("Contactez-nous à sales@paypredict.ai pour un devis Enterprise")
-      return
-    }
     if (planId === user?.plan_tier) {
       toast.info("Vous êtes déjà sur ce plan")
       return
     }
-    if (planId === "pro") {
+    if (planId === "pro" || planId === "enterprise") {
       toast.success("Redirection vers le paiement...", {
         description: "Moyens acceptés : Visa, Mastercard, RedotPay, Wise"
       })
@@ -191,8 +187,6 @@ export default function SubscriptionsPage() {
                 <div className="mt-6">
                   {plan.monthlyPrice === 0 && plan.id === "free" ? (
                     <div className="text-3xl font-bold">Gratuit</div>
-                  ) : plan.monthlyPrice === 0 && plan.id === "enterprise" ? (
-                    <div className="text-3xl font-bold">Sur devis</div>
                   ) : (
                     <div>
                       <div className="flex items-baseline gap-1">

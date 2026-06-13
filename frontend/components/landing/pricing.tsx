@@ -62,8 +62,8 @@ export function Pricing() {
     {
       name: "Enterprise",
       description: "Pour les banques et institutions financières.",
-      price: "Sur devis",
-      period: "",
+      price: yearly ? "48 000" : "5 000",
+      period: "DA/mois",
       features: [
         "Prédictions illimitées",
         "Déploiement dédié",
@@ -72,7 +72,7 @@ export function Pricing() {
         "CSM dédié 24/7 + SLA",
         "Déploiement on-premise disponible",
       ],
-      cta: t("landing.contact"),
+      cta: t("landing.getStarted"),
     },
   ]
 
@@ -169,9 +169,14 @@ export function Pricing() {
                     </span>
                   )}
                 </div>
-                {yearly && plan.highlighted && (
+                {yearly && plan.name === "Pro" && (
                   <p className="mt-2 text-xs text-[#F1B24A] font-medium">
                     Économisez 20% — soit 2 000 DA/mois au lieu de 2 500 DA/mois
+                  </p>
+                )}
+                {yearly && plan.name === "Enterprise" && (
+                  <p className="mt-2 text-xs text-green-600 dark:text-green-400 font-medium">
+                    Économisez 20% — soit 4 000 DA/mois au lieu de 5 000 DA/mois
                   </p>
                 )}
               </div>

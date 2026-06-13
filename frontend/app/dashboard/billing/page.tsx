@@ -113,10 +113,10 @@ export default function BillingPage() {
   const planPricing = [
     { name: "Free", price: 0, users: stats?.plan_distribution?.free || 0 },
     { name: "Pro", price: 2500, users: stats?.plan_distribution?.pro || 0 },
-    { name: "Enterprise", price: 0, users: stats?.plan_distribution?.enterprise || 0 },
+    { name: "Enterprise", price: 5000, users: stats?.plan_distribution?.enterprise || 0 },
   ]
 
-  const estimatedMonthlyRevenue = (stats?.plan_distribution?.pro || 0) * 2500
+  const estimatedMonthlyRevenue = ((stats?.plan_distribution?.pro || 0) * 2500) + ((stats?.plan_distribution?.enterprise || 0) * 5000)
   const estimatedYearlyRevenue = estimatedMonthlyRevenue * 12
 
   return (
@@ -134,7 +134,7 @@ export default function BillingPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{estimatedMonthlyRevenue.toLocaleString()} DA</div>
-            <p className="text-xs text-muted-foreground mt-1">Based on active Pro plans</p>
+            <p className="text-xs text-muted-foreground mt-1">Based on active Pro & Enterprise plans</p>
           </CardContent>
         </Card>
 
@@ -302,8 +302,12 @@ export default function BillingPage() {
               <h4 className="font-semibold mb-3">Enterprise</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex justify-between">
-                  <span className="text-muted-foreground">Price:</span>
-                  <span className="font-mono">Custom DA</span>
+                  <span className="text-muted-foreground">Monthly:</span>
+                  <span className="font-mono">5 000 DA/month</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-muted-foreground">Yearly:</span>
+                  <span className="font-mono">48 000 DA/year</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-muted-foreground">Predictions:</span>

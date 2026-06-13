@@ -93,11 +93,10 @@ PLANS = {
         "features": ["predictions_unlimited", "batch_upload", "api_access", "analytics", "priority_support"]
     },
     "enterprise": {
-        "monthly_price": 0,
-        "yearly_price": 0,
+        "monthly_price": 5000,
+        "yearly_price": 48000,
         "predictions": "unlimited",
-        "features": ["all_pro", "dedicated_manager", "custom_model", "24_7_support", "on_premise"],
-        "contact_sales": True
+        "features": ["all_pro", "dedicated_manager", "custom_model", "24_7_support", "on_premise"]
     }
 }
 
@@ -191,7 +190,7 @@ def subscribe():
         expires_at = None
         if billing_period == "yearly":
             expires_at = (datetime.utcnow() + timedelta(days=365)).isoformat()
-        elif plan_id == "pro":
+        elif plan_id in ("pro", "enterprise"):
             expires_at = (datetime.utcnow() + timedelta(days=30)).isoformat()
         
         dbs.update_subscription_expiry(user["id"], expires_at)
