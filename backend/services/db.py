@@ -1099,6 +1099,10 @@ class DatabaseService:
             ).all()
             
             return {
+                "total": total,
+                "unread": unread,
+                "responded": responded,
+                "pending": total - responded,
                 "total_messages": total,
                 "unread_messages": unread,
                 "responded_messages": responded,

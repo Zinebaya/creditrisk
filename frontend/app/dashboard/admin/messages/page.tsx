@@ -52,6 +52,7 @@ export default function ContactMessagesPage() {
   const [messages, setMessages] = React.useState<ContactMessage[]>([])
   const [loading, setLoading] = React.useState(true)
   const [selectedMessage, setSelectedMessage] = React.useState<ContactMessage | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [responseText, setResponseText] = React.useState("")
   const [responding, setResponding] = React.useState(false)
   const [searchTerm, setSearchTerm] = React.useState("")
@@ -101,6 +102,7 @@ export default function ContactMessagesPage() {
 
   const handleViewMessage = async (message: ContactMessage) => {
     setSelectedMessage(message)
+    setIsDialogOpen(true)
     if (!message.is_read) {
       try {
         await fetch(`${getApiBase()}/api/admin/messages/${message.id}`, {
@@ -135,6 +137,7 @@ export default function ContactMessagesPage() {
 
       toast.success("Response sent successfully")
       setResponseText("")
+      setIsDialogOpen(false)
       setSelectedMessage(null)
       loadMessages()
       loadStats()
@@ -308,84 +311,13 @@ export default function ContactMessagesPage() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewMessage(message)}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle>Détails du message</DialogTitle>
-                          <DialogDescription>
-                            Reçu le {new Date(message.created_at).toLocaleDateString("fr-FR")}
-                          </DialogDescription>
-                        </DialogHeader>
-
-                        {selectedMessage?.id === message.id && (
-                          <div className="space-y-6">
-                            {/* Message Details */}
-                            <div className="space-y-4">
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground">De</p>
-                                <p className="font-medium">{selectedMessage.name}</p>
-                                <p className="text-sm text-muted-foreground">{selectedMessage.email}</p>
-                              </div>
-
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground">Sujet</p>
-                                <p className="font-medium">{selectedMessage.subject}</p>
-                              </div>
-
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground">Type</p>
-                                <Badge>{selectedMessage.message_type}</Badge>
-                              </div>
-
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground">Message</p>
-                                <p className="whitespace-pre-wrap text-sm">{selectedMessage.message}</p>
-                              </div>
-                            </div>
-
-                            {/* Response Section */}
-                            {selectedMessage.response_message ? (
-                              <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg space-y-2">
-                                <p className="text-sm font-medium">Votre réponse</p>
-                                <p className="text-sm whitespace-pre-wrap">
-                                  {selectedMessage.response_message}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {selectedMessage.responded_at && new Date(selectedMessage.responded_at).toLocaleDateString("fr-FR")}
-                                </p>
-                              </div>
-                            ) : (
-                              <div className="space-y-2">
-                                <Textarea
-                                  placeholder="Entrez votre réponse..."
-                                  value={responseText}
-                                  onChange={(e) => setResponseText(e.target.value)}
-                                  rows={4}
-                                  disabled={responding}
-                                />
-                                <Button
-                                  onClick={handleRespond}
-                                  disabled={responding || !responseText.trim()}
-                                  className="w-full"
-                                >
-                                  <Reply className="w-4 h-4 mr-2" />
-                                  {responding ? "Envoi..." : "Répondre"}
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </DialogContent>
-                    </Dialog>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewMessage(message)}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
 
                     <Button
                       variant="outline"
@@ -401,6 +333,83 @@ export default function ContactMessagesPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Global Dialog for Details & Response */}
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+        setIsDialogOpen(open)
+        if (!open) {
+          setSelectedMessage(null)
+          setResponseText("")
+        }
+      }}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Détails du message</DialogTitle>
+            <DialogDescription>
+              {selectedMessage && `Reçu le ${new Date(selectedMessage.created_at).toLocaleDateString("fr-FR")}`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedMessage && (
+            <div className="space-y-6">
+              {/* Message Details */}
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">De</p>
+                  <p className="font-medium">{selectedMessage.name}</p>
+                  <p className="text-sm text-muted-foreground">{selectedMessage.email}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Sujet</p>
+                  <p className="font-medium">{selectedMessage.subject}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Type</p>
+                  <Badge>{selectedMessage.message_type}</Badge>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Message</p>
+                  <p className="whitespace-pre-wrap text-sm">{selectedMessage.message}</p>
+                </div>
+              </div>
+
+              {/* Response Section */}
+              {selectedMessage.response_message ? (
+                <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg space-y-2">
+                  <p className="text-sm font-medium">Votre réponse</p>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {selectedMessage.response_message}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedMessage.responded_at && new Date(selectedMessage.responded_at).toLocaleDateString("fr-FR")}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Textarea
+                    placeholder="Entrez votre réponse..."
+                    value={responseText}
+                    onChange={(e) => setResponseText(e.target.value)}
+                    rows={4}
+                    disabled={responding}
+                  />
+                  <Button
+                    onClick={handleRespond}
+                    disabled={responding || !responseText.trim()}
+                    className="w-full"
+                  >
+                    <Reply className="w-4 h-4 mr-2" />
+                    {responding ? "Envoi..." : "Répondre"}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
