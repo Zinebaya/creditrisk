@@ -29,6 +29,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/contexts/auth-context"
 import { useLanguage } from "@/contexts/language-context"
+import { getToken } from "@/lib/api"
 
 const getApiBase = () => {
   if (typeof window !== "undefined") {
@@ -57,7 +58,7 @@ export function DashboardTopbar({ onMenuClick }: { onMenuClick: () => void }) {
     try {
       if (user.role === "admin") {
         const response = await fetch(`${getApiBase()}/api/admin/messages?is_read=false`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("paypredict.token")}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         })
         if (response.ok) {
           const data = await response.json()
@@ -75,7 +76,7 @@ export function DashboardTopbar({ onMenuClick }: { onMenuClick: () => void }) {
         }
       } else {
         const response = await fetch(`${getApiBase()}/api/client/messages`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("paypredict.token")}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         })
         if (response.ok) {
           const data = await response.json()

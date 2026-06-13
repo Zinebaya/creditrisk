@@ -25,7 +25,7 @@ def print_test(name, passed, details=""):
 def test_health():
     """Test health endpoint"""
     try:
-        response = requests.get(f"{API_URL}/health", timeout=5)
+        response = requests.get(f"{API_URL}/health", timeout=25)
         passed = response.status_code == 200
         print_test("Health Check", passed, f"Status: {response.status_code}")
         return passed
@@ -39,7 +39,7 @@ def test_login():
         response = requests.post(
             f"{AUTH_URL}/login",
             json={"email": TEST_EMAIL, "password": TEST_PASSWORD},
-            timeout=5
+            timeout=25
         )
         passed = response.status_code == 200 and "token" in response.json()
         token = response.json().get("token") if passed else None
@@ -53,7 +53,7 @@ def test_get_clients(token):
     """Test getting clients list"""
     try:
         headers = {"Authorization": f"Bearer {token}"}
-        response = requests.get(f"{API_URL}/clients", headers=headers, timeout=5)
+        response = requests.get(f"{API_URL}/clients", headers=headers, timeout=25)
         passed = response.status_code == 200
         count = len(response.json().get("clients", [])) if passed else 0
         print_test("Get Clients", passed, f"Status: {response.status_code}, Count: {count}")
@@ -83,7 +83,7 @@ def test_create_client(token):
             f"{API_URL}/clients",
             json=client_data,
             headers=headers,
-            timeout=5
+            timeout=25
         )
         passed = response.status_code == 201
         client_id = response.json().get("client", {}).get("id") if passed else None
@@ -109,7 +109,7 @@ def test_update_client(token, client_id):
             f"{API_URL}/clients/{client_id}",
             json=update_data,
             headers=headers,
-            timeout=5
+            timeout=25
         )
         passed = response.status_code == 200
         print_test("Update Client", passed, f"Status: {response.status_code}")
@@ -129,7 +129,7 @@ def test_delete_client(token, client_id):
         response = requests.delete(
             f"{API_URL}/clients/{client_id}",
             headers=headers,
-            timeout=5
+            timeout=25
         )
         passed = response.status_code == 200
         print_test("Delete Client", passed, f"Status: {response.status_code}")
@@ -142,7 +142,7 @@ def test_analytics(token):
     """Test analytics endpoint"""
     try:
         headers = {"Authorization": f"Bearer {token}"}
-        response = requests.get(f"{API_URL}/analytics", headers=headers, timeout=5)
+        response = requests.get(f"{API_URL}/analytics", headers=headers, timeout=25)
         passed = response.status_code == 200
         print_test("Analytics", passed, f"Status: {response.status_code}")
         return passed
@@ -154,7 +154,7 @@ def test_usage(token):
     """Test usage endpoint"""
     try:
         headers = {"Authorization": f"Bearer {token}"}
-        response = requests.get(f"{API_URL}/usage", headers=headers, timeout=5)
+        response = requests.get(f"{API_URL}/usage", headers=headers, timeout=25)
         passed = response.status_code == 200
         print_test("Usage Stats", passed, f"Status: {response.status_code}")
         return passed

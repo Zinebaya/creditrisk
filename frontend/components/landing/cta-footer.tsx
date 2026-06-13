@@ -1,5 +1,4 @@
-"use client";
-
+import React from "react"
 import Link from "next/link"
 
 import { motion } from "framer-motion"
@@ -10,8 +9,68 @@ import { Logo } from "@/components/brand/logo"
 import { useLanguage } from "@/contexts/language-context"
 import { toast } from "sonner"
 
+const getApiBase = () => {
+  if (typeof window !== "undefined") {
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return process.env.NEXT_PUBLIC_API_URL
+    }
+    const hostname = window.location.hostname
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return `http://${hostname}:8000`
+    }
+    return window.location.origin
+  }
+  return process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+}
+
 export function CtaSection() {
   const { t } = useLanguage()
+  const [firstName, setFirstName] = React.useState("")
+  const [lastName, setLastName] = React.useState("")
+  const [email, setEmail] = React.useState("")
+  const [company, setCompany] = React.useState("")
+  const [submitting, setSubmitting] = React.useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!firstName.trim() || !lastName.trim() || !email.trim()) {
+      toast.error("Veuillez remplir tous les champs obligatoires")
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const response = await fetch(`${getApiBase()}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: `${firstName.trim()} ${lastName.trim()}`,
+          email: email.trim(),
+          subject: `Demande de rapport ROI - ${company.trim() || "Particulier"}`,
+          message: `Demande de rapport ROI. Entreprise : ${company.trim() || "Non spécifiée"}.`,
+          message_type: "contact"
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to send contact message")
+      }
+
+      toast.success("Votre demande a été envoyée avec succès !")
+      setFirstName("")
+      setLastName("")
+      setEmail("")
+      setCompany("")
+    } catch (error: any) {
+      toast.error("Échec de l'envoi de la demande. Veuillez réessayer.")
+      console.error(error)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <section id="contact" className="py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -57,10 +116,7 @@ export function CtaSection() {
             </div>
 
             <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                toast.success("Request received. Connect this form to your CRM in production.")
-              }}
+              onSubmit={handleSubmit}
               className="rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 lg:p-8 space-y-4"
             >
               <p className="text-sm font-semibold text-white">
@@ -70,11 +126,17 @@ export function CtaSection() {
                 <Input
                   required
                   placeholder="First name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  disabled={submitting}
                   className="bg-white/8 border-white/15 text-white placeholder:text-white/50 h-11"
                 />
                 <Input
                   required
                   placeholder="Last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  disabled={submitting}
                   className="bg-white/8 border-white/15 text-white placeholder:text-white/50 h-11"
                 />
               </div>
@@ -82,18 +144,25 @@ export function CtaSection() {
                 required
                 type="email"
                 placeholder="Work email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
                 className="bg-white/8 border-white/15 text-white placeholder:text-white/50 h-11"
               />
               <Input
                 placeholder="Company"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                disabled={submitting}
                 className="bg-white/8 border-white/15 text-white placeholder:text-white/50 h-11"
               />
               <Button
                 type="submit"
+                disabled={submitting}
                 className="w-full h-11 bg-[#F1B24A] hover:bg-[#F1B24A]/90 text-[#164A41] rounded-full font-semibold gap-2"
               >
                 <Send className="size-4" />
-                Request my report
+                {submitting ? "Envoi..." : "Request my report"}
               </Button>
               <p className="text-xs text-white/50 text-center">
                 We respond in under 4 business hours.

@@ -3,6 +3,7 @@
 import React from "react"
 import { Mail, MessageSquare, Eye, Trash2, Reply, Filter, Search } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { getToken } from "@/lib/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -25,7 +26,10 @@ const getApiBase = () => {
       return process.env.NEXT_PUBLIC_API_URL
     }
     const hostname = window.location.hostname
-    return `http://${hostname}:8000`
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return `http://${hostname}:8000`
+    }
+    return window.location.origin
   }
   return process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
 }
@@ -62,7 +66,7 @@ export default function ContactMessagesPage() {
         params.append("is_read", filterRead === "read" ? "true" : "false")
       }
       const response = await fetch(`${getApiBase()}/api/admin/messages?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("paypredict.token")}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       })
       
       if (!response.ok) throw new Error("Failed to load messages")
@@ -79,7 +83,7 @@ export default function ContactMessagesPage() {
   const loadStats = React.useCallback(async () => {
     try {
       const response = await fetch(`${getApiBase()}/api/admin/messages/stats`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("paypredict.token")}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       })
       if (response.ok) {
         const data = await response.json()
@@ -100,7 +104,7 @@ export default function ContactMessagesPage() {
     if (!message.is_read) {
       try {
         await fetch(`${getApiBase()}/api/admin/messages/${message.id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("paypredict.token")}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         })
         setMessages(prev => prev.map(m => m.id === message.id ? { ...m, is_read: true } : m))
         loadStats()
@@ -122,7 +126,7 @@ export default function ContactMessagesPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("paypredict.token")}`
+          Authorization: `Bearer ${getToken()}`
         },
         body: JSON.stringify({ response: responseText.trim() })
       })
@@ -147,7 +151,7 @@ export default function ContactMessagesPage() {
     try {
       const response = await fetch(`${getApiBase()}/api/admin/messages/${messageId}/delete`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${localStorage.getItem("paypredict.token")}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       })
 
       if (!response.ok) throw new Error("Failed to delete message")
