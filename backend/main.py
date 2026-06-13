@@ -67,6 +67,7 @@ def create_app() -> Flask:
     
     configure_logging()
     db_service = DatabaseService(settings.DATABASE_URL)
+    app.db = db_service
     db_service.ensure_default_admin(settings.DEFAULT_ADMIN_EMAIL, AuthService.hash_password(settings.DEFAULT_ADMIN_PASSWORD))
     
     # Seed additional demo accounts (SQLite is ephemeral on Render, so recreate each deploy)

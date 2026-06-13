@@ -11,11 +11,32 @@ from datetime import datetime, timedelta
 logger = logging.getLogger(__name__)
 
 class DatabaseService:
+    _instance = None
+
+    def __new__(cls, database_url: str, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(DatabaseService, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self, database_url: str):
-        self.engine = create_engine(database_url, future=True, poolclass=NullPool)
+        if getattr(self, "_initialized", False):
+            return
+        if database_url.startswith("sqlite"):
+            self.engine = create_engine(database_url, future=True)
+        else:
+            self.engine = create_engine(
+                database_url,
+                future=True,
+                pool_size=10,
+                max_overflow=20,
+                pool_recycle=300,
+                pool_pre_ping=True
+            )
         self.SessionLocal = sessionmaker(bind=self.engine, autoflush=False, autocommit=False, future=True)
         self._migrate_sqlite()
         Base.metadata.create_all(self.engine)
+        self._initialized = True
 
     def _migrate_sqlite(self) -> None:
         """Migrate SQLite schema to add missing columns without data loss."""

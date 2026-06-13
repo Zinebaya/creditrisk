@@ -16,7 +16,7 @@ TEST_EMAIL = "client@paypredict.dz"
 TEST_PASSWORD = "Client@2026!"
 
 def print_test(name, passed, details=""):
-    status = "✓ PASS" if passed else "✗ FAIL"
+    status = "[PASS]" if passed else "[FAIL]"
     print(f"{status}: {name}")
     if details:
         print(f"   {details}")
@@ -191,7 +191,7 @@ def main():
     test_usage(token)
     
     print("=" * 60)
-    print("✅ ALL TESTS COMPLETED!")
+    print("[SUCCESS] ALL TESTS COMPLETED!")
     print("=" * 60)
     print()
     print("The site is fully functional. All buttons and features work correctly.")
