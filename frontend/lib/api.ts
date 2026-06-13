@@ -18,6 +18,7 @@ const API_BASE = getApiBase()
 export type ApiUser = { id: number; email: string; role: string; is_active?: boolean; first_name?: string; last_name?: string; parent_id?: number; phone?: string; wilaya?: string; address?: string; photo_url?: string; company_name?: string; company_sector?: string; plan_tier?: string; subscription_status?: string; monthly_predictions_used?: number; created_at?: string }
 export type Client = { id: number; name: string; first_name?: string; gender?: string; email: string; phone: string; address?: string; wilaya: string; city: string; sector?: string; repayment_status?: string; notes?: string; owner_id?: number; created_at: string }
 export type Prediction = { id: number; user_id?: number; client_id?: number; user_email?: string; input_json?: Record<string, any>; prediction: string; probability: number; decision: string; explanation?: any; created_at: string }
+export type ClientMessage = { id: number; name: string; email: string; subject: string; message: string; message_type: string; is_read: boolean; read_at?: string; response_message?: string; responded_at?: string; created_at: string; updated_at?: string }
 export type BatchPredictionResult = { predictions: Array<Record<string, any> & { rowNumber: number; prediction: string; probability: number; decision: string; status?: string; error?: string }>; count: number }
 export type Analytics = { total_predictions: number; average_probability: number; risk_distribution: Record<string, number>; monthly_predictions: { month: string; count: number }[] }
 export type AdminStats = {
@@ -196,6 +197,8 @@ export type Api = {
   superadminUsers: () => Promise<{ users: any[] }>
   superadminSectors: () => Promise<{ sectors: any }>
   superadminAnalytics: () => Promise<any>
+  clientMessages: () => Promise<{ messages: ClientMessage[] }>
+  clientCreateMessage: (payload: { subject: string; message: string }) => Promise<{ success: boolean; contact_id: number }>
   logout: () => Promise<{ message: string }>
 }
 
@@ -244,5 +247,7 @@ export const api: Api = {
   superadminUsers: () => request<{ users: any[] }>("/api/superadmin/users"),
   superadminSectors: () => request<{ sectors: any }>("/api/superadmin/sectors"),
   superadminAnalytics: () => request<any>("/api/superadmin/analytics"),
+  clientMessages: () => request<{ messages: ClientMessage[] }>("/api/client/messages"),
+  clientCreateMessage: (payload: { subject: string; message: string }) => request<{ success: boolean; contact_id: number }>("/api/client/messages", { method: "POST", body: JSON.stringify(payload) }),
   logout: () => request<{ message: string }>("/auth/logout", { method: "POST", body: JSON.stringify({ refresh_token: getRefreshToken() }) }),
 }

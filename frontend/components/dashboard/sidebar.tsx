@@ -56,6 +56,7 @@ export function DashboardSidebar({
       items: [
         { href: "/dashboard", label: t("nav.dashboard"), icon: LayoutDashboard },
         { href: "/dashboard/predict", label: t("nav.predict"), icon: Sparkles, badge: "AI", roles: ["client", "client_user"] },
+        { href: "/dashboard/messages", label: t("nav.messages"), icon: MessageSquare, roles: ["client", "client_user"] },
         { href: "/dashboard/analytics", label: t("nav.analytics"), icon: BarChart3, roles: ["client", "client_user"] },
       ],
     },

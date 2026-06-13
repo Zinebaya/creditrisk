@@ -7,7 +7,7 @@ import requests
 import json
 import sys
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://127.0.0.1:8000"
 API_URL = f"{BASE_URL}/api"
 AUTH_URL = f"{BASE_URL}/auth"
 

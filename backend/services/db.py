@@ -2,6 +2,7 @@ import logging
 from contextlib import contextmanager
 from typing import Any, Dict, List, Optional
 from sqlalchemy import create_engine, select, func
+from sqlalchemy.pool import NullPool
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 from models import Base, User, Client, Prediction, Log, ModelVersion, Enterprise, Repayment, Payment
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class DatabaseService:
     def __init__(self, database_url: str):
-        self.engine = create_engine(database_url, future=True)
+        self.engine = create_engine(database_url, future=True, poolclass=NullPool)
         self.SessionLocal = sessionmaker(bind=self.engine, autoflush=False, autocommit=False, future=True)
         self._migrate_sqlite()
         Base.metadata.create_all(self.engine)
@@ -963,6 +964,8 @@ class DatabaseService:
                     query = query.filter_by(is_read=filters["is_read"])
                 if "message_type" in filters:
                     query = query.filter_by(message_type=filters["message_type"])
+                if "email" in filters:
+                    query = query.filter_by(email=filters["email"])
             
             # Count total
             count_query = select(func.count(ContactMessage.id))
@@ -971,6 +974,8 @@ class DatabaseService:
                     count_query = count_query.filter(ContactMessage.is_read == filters["is_read"])
                 if "message_type" in filters:
                     count_query = count_query.filter(ContactMessage.message_type == filters["message_type"])
+                if "email" in filters:
+                    count_query = count_query.filter(ContactMessage.email == filters["email"])
             total = s.execute(count_query).scalar_one() or 0
             
             # Order and paginate

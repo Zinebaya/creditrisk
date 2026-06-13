@@ -258,3 +258,95 @@ def admin_message_stats():
         return jsonify({"error": str(e)}), 403
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# ==================== CLIENT ENDPOINTS ====================
+
+@contact_bp.route("/client/messages", methods=["GET"])
+def client_get_messages():
+    """Get all contact messages sent by the logged-in client"""
+    try:
+        email = require_auth()
+        
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("per_page", 50, type=int)
+        
+        db = get_db_service()
+        
+        messages, total = db.get_contact_messages(
+            page=page,
+            per_page=per_page,
+            filters={"email": email}
+        )
+        
+        return jsonify({
+            "messages": messages,
+            "pagination": {
+                "page": page,
+                "per_page": per_page,
+                "total": total,
+                "pages": (total + per_page - 1) // per_page
+            }
+        }), 200
+    
+    except Unauthorized as e:
+        return jsonify({"error": str(e)}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@contact_bp.route("/client/messages", methods=["POST"])
+def client_submit_message():
+    """Submit a support message/complaint from a logged-in client"""
+    try:
+        email = require_auth()
+        db = get_db_service()
+        user = db.get_user_by_email(email)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Request body required"}), 400
+            
+        subject = data.get("subject", "").strip()
+        message = data.get("message", "").strip()
+        
+        if not subject or len(subject) < 3:
+            return jsonify({"error": "Subject must be at least 3 characters"}), 400
+        if not message or len(message) < 10:
+            return jsonify({"error": "Message must be at least 10 characters"}), 400
+        
+        name = f"{user.get('first_name') or ''} {user.get('last_name') or ''}".strip() or email
+        
+        contact_id = db.create_contact_message(
+            name=name,
+            email=email,
+            subject=subject,
+            message=message,
+            message_type="support"
+        )
+        
+        try:
+            email_service = EmailService(settings.SMTP_SERVER, settings.SMTP_PORT, settings.SMTP_USER, settings.SMTP_PASSWORD)
+            email_service.send_admin_contact_notification(
+                contact_name=name,
+                contact_email=email,
+                subject=subject,
+                message=message,
+                message_type="support",
+                admin_email=settings.DEFAULT_ADMIN_EMAIL
+            )
+        except Exception as e:
+            print(f"[WARNING] Failed to send admin email notification: {e}")
+            
+        return jsonify({
+            "success": True,
+            "message": "Support message sent successfully",
+            "contact_id": contact_id
+        }), 201
+        
+    except Unauthorized as e:
+        return jsonify({"error": str(e)}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

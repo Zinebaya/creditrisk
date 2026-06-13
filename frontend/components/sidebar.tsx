@@ -17,6 +17,7 @@ import {
   X,
   Home,
   LogOut,
+  MessageSquare,
 } from "lucide-react"
 import { Logo } from "@/components/brand/logo"
 import { cn } from "@/lib/utils"
@@ -75,6 +76,7 @@ export function Sidebar({
     const dashboardItems = [
       { href: "/dashboard", label: t("nav.dashboard"), icon: LayoutDashboard },
       { href: "/dashboard/predict", label: t("nav.predict"), icon: Sparkles, badge: "AI" },
+      { href: "/dashboard/messages", label: t("nav.messages"), icon: MessageSquare },
       { href: "/dashboard/analytics", label: t("nav.analytics"), icon: BarChart3 },
     ]
 
