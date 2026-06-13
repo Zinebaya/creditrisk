@@ -418,7 +418,26 @@ class DatabaseService:
             if user_id is not None: 
                 q = q.filter_by(user_id=user_id)
             rows = s.execute(q).scalars().all()
-            return [{"id": p.id, "user_id": p.user_id, "client_id": p.client_id, "input_json": p.input_json, "prediction": p.prediction, "probability": p.probability, "decision": p.decision, "explanation": p.explanation, "created_at": p.created_at.isoformat()} for p in rows]
+            result = []
+            for p in rows:
+                client_name = None
+                if p.client_id:
+                    client = s.get(Client, p.client_id)
+                    if client:
+                        client_name = f"{client.first_name or ''} {client.name or ''}".strip() or client.email
+                result.append({
+                    "id": p.id,
+                    "user_id": p.user_id,
+                    "client_id": p.client_id,
+                    "client_name": client_name,
+                    "input_json": p.input_json,
+                    "prediction": p.prediction,
+                    "probability": p.probability,
+                    "decision": p.decision,
+                    "explanation": p.explanation,
+                    "created_at": p.created_at.isoformat()
+                })
+            return result
 
     def get_analytics(self) -> Dict[str, Any]:
         with self.session() as s:
@@ -626,10 +645,16 @@ class DatabaseService:
             ).scalars().all()
             result = []
             for p in rows:
+                client_name = None
+                if p.client_id:
+                    client = s.get(Client, p.client_id)
+                    if client:
+                        client_name = f"{client.first_name or ''} {client.name or ''}".strip() or client.email
                 pred_dict = {
                     "id": p.id,
                     "user_id": p.user_id,
                     "client_id": p.client_id,
+                    "client_name": client_name,
                     "prediction": p.prediction,
                     "probability": p.probability,
                     "decision": p.decision,
@@ -682,18 +707,24 @@ class DatabaseService:
                 .order_by(Prediction.created_at.desc())
                 .limit(limit)
             ).scalars().all()
-            return [
-                {
+            result = []
+            for p in rows:
+                client_name = None
+                if p.client_id:
+                    client = s.get(Client, p.client_id)
+                    if client:
+                        client_name = f"{client.first_name or ''} {client.name or ''}".strip() or client.email
+                result.append({
                     "id": p.id,
                     "user_id": p.user_id,
                     "client_id": p.client_id,
+                    "client_name": client_name,
                     "prediction": p.prediction,
                     "probability": p.probability,
                     "decision": p.decision,
                     "created_at": p.created_at.isoformat(),
-                }
-                for p in rows
-            ]
+                })
+            return result
 
     def get_user_analytics(self, user_id: int) -> Dict[str, Any]:
         """Get analytics for a specific user (client's own data)."""

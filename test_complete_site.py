@@ -170,7 +170,7 @@ def main():
     
     # Test health
     if not test_health():
-        print("❌ Backend server is not running!")
+        print("[ERROR] Backend server is not running!")
         print("Please start the backend server first.")
         sys.exit(1)
     

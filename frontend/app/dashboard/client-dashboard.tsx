@@ -297,6 +297,7 @@ export default function ClientDashboard() {
                   <thead className="border-b bg-muted/40">
                     <tr>
                       <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wide">Date</th>
+                      <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wide">Client</th>
                       <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wide">Decision</th>
                       <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wide">Probability</th>
                       <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wide">Risk</th>
@@ -309,6 +310,9 @@ export default function ClientDashboard() {
                           <span className="text-xs text-muted-foreground">
                             {new Date(pred.created_at).toLocaleDateString(locale)}
                           </span>
+                        </td>
+                        <td className="py-3 px-4 text-sm font-medium text-slate-800 dark:text-slate-200">
+                          {pred.client_name || `Client #${pred.client_id || 'Inconnu'}`}
                         </td>
                         <td className="py-3 px-4">
                           <Badge
