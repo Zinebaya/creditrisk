@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import {
   LayoutDashboard,
   Sparkles,
-  Upload,
   BarChart3,
   Users,
   ShieldCheck,
@@ -76,7 +75,6 @@ export function Sidebar({
     const dashboardItems = [
       { href: "/dashboard", label: t("nav.dashboard"), icon: LayoutDashboard },
       { href: "/dashboard/predict", label: t("nav.predict"), icon: Sparkles, badge: "AI" },
-      { href: "/dashboard/upload", label: t("nav.upload"), icon: Upload },
       { href: "/dashboard/analytics", label: t("nav.analytics"), icon: BarChart3 },
     ]
 

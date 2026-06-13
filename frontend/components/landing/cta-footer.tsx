@@ -113,7 +113,6 @@ export function SiteFooter() {
       title: t("landing.features"),
       links: [
         { label: t("nav.predict"), href: "/dashboard/predict" },
-        { label: t("nav.upload"), href: "/dashboard/upload" },
         { label: t("nav.analytics"), href: "/dashboard/analytics" },
         { label: t("nav.helpDoc"), href: "/dashboard/help" },
       ],

@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 from sqlalchemy import create_engine, select, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
-from models import Base, User, Client, Prediction, Log, ModelVersion, Enterprise, Repayment
+from models import Base, User, Client, Prediction, Log, ModelVersion, Enterprise, Repayment, Payment
 from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)

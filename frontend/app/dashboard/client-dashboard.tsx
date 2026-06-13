@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import {
   Activity,
   BarChart3,
-  Upload,
   Zap,
   TrendingUp,
   Award,
@@ -247,14 +246,7 @@ export default function ClientDashboard() {
                 </Button>
               </motion.div>
             </Link>
-            <Link href="/dashboard/upload" className="block">
-              <motion.div whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }}>
-                <Button variant="outline" className="w-full justify-start" size="sm">
-                  <Upload className="size-4 mr-2" />
-                  Batch Upload
-                </Button>
-              </motion.div>
-            </Link>
+
             <Link href="/dashboard/analytics" className="block">
               <motion.div whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }}>
                 <Button variant="outline" className="w-full justify-start" size="sm">

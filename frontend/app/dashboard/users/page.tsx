@@ -84,6 +84,18 @@ export default function UsersPage() {
   const [editCompanySector, setEditCompanySector] = React.useState("")
   const [editPlan, setEditPlan] = React.useState("free")
   const [editPassword, setEditPassword] = React.useState("")
+  const loadUsers = async () => {
+    try {
+      setLoading(true)
+      const response = await api.listUsers()
+      setUsers(response.users || [])
+    } catch (error) {
+      toast.error("Failed to load users")
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const startEditUser = (u: ApiUser) => {
     setEditingUser(u)
@@ -197,18 +209,7 @@ export default function UsersPage() {
     )
   }
 
-  const loadUsers = async () => {
-    try {
-      setLoading(true)
-      const response = await api.listUsers()
-      setUsers(response.users || [])
-    } catch (error) {
-      toast.error("Failed to load users")
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+
 
   const handleCreateAdmin = async (e: React.FormEvent) => {
     e.preventDefault()
