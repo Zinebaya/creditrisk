@@ -70,7 +70,10 @@ export default function ContactMessagesPage() {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
       
-      if (!response.ok) throw new Error("Failed to load messages")
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to load messages")
+      }
       
       const data = await response.json()
       setMessages(data.messages || [])
@@ -133,7 +136,10 @@ export default function ContactMessagesPage() {
         body: JSON.stringify({ response: responseText.trim() })
       })
 
-      if (!response.ok) throw new Error("Failed to send response")
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to send response")
+      }
 
       toast.success("Response sent successfully")
       setResponseText("")
@@ -157,7 +163,10 @@ export default function ContactMessagesPage() {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
 
-      if (!response.ok) throw new Error("Failed to delete message")
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to delete message")
+      }
 
       toast.success("Message deleted")
       loadMessages()
