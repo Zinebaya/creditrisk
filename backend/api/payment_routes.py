@@ -76,6 +76,17 @@ PAYMENT_METHODS = {
         "processing_time": "1-2 jours",
         "fee_percentage": 0.3,
         "description": "Virement international aux meilleurs taux"
+    },
+    "dahabia": {
+        "name": "Carte Dahabia",
+        "name_en": "Edahabia Card",
+        "name_ar": "الذهبية",
+        "icon": "credit-card",
+        "supported": True,
+        "countries": ["DZ"],
+        "processing_time": "Instantané",
+        "fee_percentage": 0.0,
+        "description": "Paiement local Algérie Poste"
     }
 }
 

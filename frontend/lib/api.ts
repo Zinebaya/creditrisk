@@ -199,6 +199,7 @@ export type Api = {
   superadminAnalytics: () => Promise<any>
   clientMessages: () => Promise<{ messages: ClientMessage[] }>
   clientCreateMessage: (payload: { subject: string; message: string }) => Promise<{ success: boolean; contact_id: number }>
+  subscribe: (payload: { plan_id: string; payment_method: string; billing_period: string }) => Promise<{ success: boolean; message: string; plan_id: string; amount: number; billing_period: string; expires_at: string }>
   logout: () => Promise<{ message: string }>
 }
 
@@ -249,5 +250,6 @@ export const api: Api = {
   superadminAnalytics: () => request<any>("/api/superadmin/analytics"),
   clientMessages: () => request<{ messages: ClientMessage[] }>("/api/client/messages"),
   clientCreateMessage: (payload: { subject: string; message: string }) => request<{ success: boolean; contact_id: number }>("/api/client/messages", { method: "POST", body: JSON.stringify(payload) }),
+  subscribe: (payload: { plan_id: string; payment_method: string; billing_period: string }) => request<{ success: boolean; message: string; plan_id: string; amount: number; billing_period: string; expires_at: string }>("/api/payment/subscribe", { method: "POST", body: JSON.stringify(payload) }),
   logout: () => request<{ message: string }>("/auth/logout", { method: "POST", body: JSON.stringify({ refresh_token: getRefreshToken() }) }),
 }
