@@ -1,3 +1,5 @@
+"use client"
+
 import { ShieldCheck, Brain, MapPinned, LockKeyhole, Sparkles, Users2 } from "lucide-react"
 import { SiteNav } from "@/components/landing/site-nav"
 import { SiteFooter } from "@/components/landing/cta-footer"

@@ -1,3 +1,5 @@
+"use client"
+
 import { SiteNav } from "@/components/landing/site-nav"
 import { Hero } from "@/components/landing/hero"
 import { LogoCloud } from "@/components/landing/logo-cloud"
