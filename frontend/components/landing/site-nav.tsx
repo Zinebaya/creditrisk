@@ -16,11 +16,10 @@ export function SiteNav() {
   const [open, setOpen] = React.useState(false)
 
   const navItems = [
+    { href: "/#", label: t("landing.home") },
     { href: "/#features", label: t("landing.features") },
-    { href: "/#how", label: t("landing.howItWorks") },
+    { href: "/#solutions", label: t("landing.solutions") },
     { href: "/#pricing", label: t("landing.pricing") },
-    { href: "/#testimonials", label: t("landing.customers") },
-    { href: "/about", label: t("landing.about") },
     { href: "/#contact", label: t("landing.contact") },
   ]
 
@@ -107,10 +106,10 @@ export function SiteNav() {
                 ))}
 
                 <Button variant="ghost" asChild className="justify-start">
-                  <Link href="/login" onClick={() => setOpen(false)}>Sign in</Link>
+                  <Link href="/login" onClick={() => setOpen(false)}>{t("landing.signIn")}</Link>
                 </Button>
                 <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full mt-1">
-                  <Link href="/dashboard" onClick={() => setOpen(false)}>Get started</Link>
+                  <Link href="/dashboard" onClick={() => setOpen(false)}>{t("landing.getStarted")}</Link>
                 </Button>
               </nav>
             </motion.div>

@@ -120,12 +120,12 @@ export function CtaSection() {
               className="rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 lg:p-8 space-y-4"
             >
               <p className="text-sm font-semibold text-white">
-                Or get a tailored ROI report in your inbox
+                Ou recevez un rapport de ROI personnalisé par e-mail
               </p>
               <div className="grid sm:grid-cols-2 gap-3">
                 <Input
                   required
-                  placeholder="First name"
+                  placeholder="Prénom"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   disabled={submitting}
@@ -133,7 +133,7 @@ export function CtaSection() {
                 />
                 <Input
                   required
-                  placeholder="Last name"
+                  placeholder="Nom"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   disabled={submitting}
@@ -143,14 +143,14 @@ export function CtaSection() {
               <Input
                 required
                 type="email"
-                placeholder="Work email"
+                placeholder="E-mail professionnel"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={submitting}
                 className="bg-white/8 border-white/15 text-white placeholder:text-white/50 h-11"
               />
               <Input
-                placeholder="Company"
+                placeholder="Entreprise"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 disabled={submitting}
@@ -162,10 +162,10 @@ export function CtaSection() {
                 className="w-full h-11 bg-[#F1B24A] hover:bg-[#F1B24A]/90 text-[#164A41] rounded-full font-semibold gap-2"
               >
                 <Send className="size-4" />
-                {submitting ? "Envoi..." : "Request my report"}
+                {submitting ? "Envoi..." : "Demander mon rapport"}
               </Button>
               <p className="text-xs text-white/50 text-center">
-                We respond in under 4 business hours.
+                Nous répondons en moins de 4 heures ouvrables.
               </p>
             </form>
           </div>
@@ -181,39 +181,34 @@ export function SiteFooter() {
     {
       title: t("landing.features"),
       links: [
-        { label: t("nav.predict"), href: "/dashboard/predict" },
-        { label: t("nav.analytics"), href: "/dashboard/analytics" },
-        { label: t("nav.helpDoc"), href: "/dashboard/help" },
+        { label: "Modèle de scoring", href: "/#features" },
+        { label: "Analyse prédictive", href: "/#features" },
+        { label: "Sécurité & Conformité", href: "/#features" },
       ],
     },
     {
       title: "Solutions",
       links: [
-        { label: "Banks", href: "/about" },
-        { label: "Consumer lending", href: "/about" },
-        { label: "BNPL", href: "/about" },
-        { label: "SMB underwriting", href: "/about" },
-        { label: "Auto finance", href: "/about" },
+        { label: "Banques & Institutions", href: "/#solutions" },
+        { label: "Fintechs & Prêteurs", href: "/#solutions" },
+        { label: "Paiement Différé & BNPL", href: "/#solutions" },
+        { label: "Microfinance", href: "/#solutions" },
       ],
     },
     {
-      title: t("landing.about"),
+      title: t("landing.pricing"),
       links: [
-        { label: t("landing.about"), href: "/about" },
-        { label: t("landing.customers"), href: "/#testimonials" },
-        { label: "Careers", href: "/about" },
-        { label: "Press", href: "/about" },
-        { label: "Security", href: "/about" },
+        { label: "Plan Gratuit", href: "/#pricing" },
+        { label: "Plan Professionnel (Pro)", href: "/#pricing" },
+        { label: "Plan Enterprise", href: "/#pricing" },
       ],
     },
     {
-      title: "Resources",
+      title: "Contact",
       links: [
-        { label: "Documentation", href: "/dashboard/help" },
-        { label: "Changelog", href: "/about" },
-        { label: "Blog", href: "/about" },
-        { label: "Status", href: "/about" },
-        { label: "Trust center", href: "/about" },
+        { label: "Support client", href: "/#contact" },
+        { label: "Demander une démo", href: "/#contact" },
+        { label: "Nous contacter", href: "/#contact" },
       ],
     },
   ]
@@ -224,12 +219,11 @@ export function SiteFooter() {
           <div className="lg:col-span-2">
             <Logo variant="light" />
             <p className="mt-4 text-sm text-white/60 max-w-xs leading-relaxed">
-              The AI infrastructure for credit risk at institutional scale. Built
-              by risk engineers, trusted by global banks.
+              L'infrastructure d'IA pour le risque de crédit à l'échelle institutionnelle. Conçue par des ingénieurs du risque, approuvée par les banques.
             </p>
             <div className="mt-6 flex items-center gap-2">
               <span className="size-2 rounded-full bg-[#9DC88D]" />
-              <span className="text-xs text-white/60">All systems operational</span>
+              <span className="text-xs text-white/60">Tous les systèmes sont opérationnels</span>
             </div>
           </div>
           {cols.map((col) => (
@@ -255,13 +249,12 @@ export function SiteFooter() {
 
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-xs text-white/50">
-            © {new Date().getFullYear()} PayPredict. All rights reserved.
+            © {new Date().getFullYear()} PayPredict. Tous droits réservés.
           </p>
           <div className="flex items-center gap-5 text-xs text-white/50">
-            <Link href="/about">Privacy</Link>
-            <Link href="/about">Terms</Link>
-            <Link href="/about">Security</Link>
-            <Link href="/about">DPA</Link>
+            <Link href="/#">Confidentialité</Link>
+            <Link href="/#">Conditions</Link>
+            <Link href="/#">Sécurité</Link>
           </div>
         </div>
       </div>
